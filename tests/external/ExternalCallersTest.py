@@ -3,10 +3,10 @@ import unittest
 
 class ExternalCallersTest(unittest.TestCase):
 
-    def set_up(self):
+    def setUp(self):
         return
 
-    def tear_down(self):
+    def tearDown(self):
         return
 
     def test_something(self):

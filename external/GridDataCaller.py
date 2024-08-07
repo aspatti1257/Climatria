@@ -1,4 +1,4 @@
-from ExternalCallers.AbstractExternalCaller import AbstractExternalCaller
+from external.AbstractExternalCaller import AbstractExternalCaller
 
 
 class GridDataCaller(AbstractExternalCaller):
