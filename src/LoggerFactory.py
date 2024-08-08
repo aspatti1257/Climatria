@@ -2,7 +2,7 @@ import logging
 import sys
 
 
-class LoggerFactory(object):
+class LoggerFactory:
 
     @staticmethod
     def create_log(clazz):

@@ -5,6 +5,7 @@ scipy==1.14.0
 requests==2.32.3
 schedule==1.2.2
 statsmodels==0.14.2
+pymongo==4.8.0
 
 pip~=24.0
 Jinja2~=3.1.4
