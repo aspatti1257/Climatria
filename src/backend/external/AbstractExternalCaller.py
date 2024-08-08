@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 import pandas as pd
-from LoggerFactory import LoggerFactory
+from src.LoggerFactory import LoggerFactory
 
 
 class AbstractExternalCaller(ABC):

@@ -1,6 +1,6 @@
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.stattools import adfuller
-from LoggerFactory import LoggerFactory
+from src.LoggerFactory import LoggerFactory
 
 
 class ArimaProcessor:

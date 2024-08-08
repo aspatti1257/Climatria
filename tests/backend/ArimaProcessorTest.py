@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-from ArimaProcessor import ArimaProcessor
+from src.backend.ArimaProcessor import ArimaProcessor
 
 
 class ArimaProcessorTest(unittest.TestCase):

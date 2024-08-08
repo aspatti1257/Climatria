@@ -1,4 +1,4 @@
-from external.AbstractExternalCaller import AbstractExternalCaller
+from src.backend.external.AbstractExternalCaller import AbstractExternalCaller
 
 
 class GridDataCaller(AbstractExternalCaller):
