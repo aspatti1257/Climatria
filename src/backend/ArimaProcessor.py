@@ -5,7 +5,7 @@ from src.LoggerFactory import LoggerFactory
 
 class ArimaProcessor:
 
-    log = LoggerFactory.create_log(__name__)
+    __log = LoggerFactory.create_log(__name__)
 
     def __init__(self, inputs):
         self.inputs = inputs

@@ -41,7 +41,6 @@ class UserDAOTest(unittest.TestCase):
         assert user_2_from_db is not None
         assert user_2_from_db == user2
 
-
     def test_truncate(self):
         user1_id = "ann@test.com"
         user1 = User(user1_id, "ann", "ISNE", 42.3552, -71.06578, None)

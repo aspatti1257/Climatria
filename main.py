@@ -25,7 +25,6 @@ def init_db_connection():
     return dao
 
 
-
 def fetch_users():
     #TODO: implement
     pass
