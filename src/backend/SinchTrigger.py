@@ -24,7 +24,7 @@ class SinchTrigger:
 
         formatted_phone = phone_number.strip().replace("-", "")
 
-        if not re.search(re.compile('^\d{11}$'), formatted_phone):
+        if not re.search(re.compile("^\\d{11}$"), formatted_phone):
             self.__log.info("Improperly formatted phone number: %s", formatted_phone)
             return None
 

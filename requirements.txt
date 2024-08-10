@@ -11,3 +11,4 @@ pip~=24.0
 Jinja2~=3.1.4
 sinch~=1.0.0
 attrs~=24.2.0
+pvlib==0.11.0

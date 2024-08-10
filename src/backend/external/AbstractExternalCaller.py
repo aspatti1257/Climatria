@@ -6,7 +6,7 @@ from src.LoggerFactory import LoggerFactory
 
 class AbstractExternalCaller(ABC):
 
-    log = LoggerFactory.create_log(__name__)
+    _log = LoggerFactory.create_log(__name__)
 
     def __init__(self):
         return

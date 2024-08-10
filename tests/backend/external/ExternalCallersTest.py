@@ -1,4 +1,5 @@
 import unittest
+from src.backend.external.GridDataCaller import GridDataCaller
 
 
 class ExternalCallersTest(unittest.TestCase):
@@ -9,8 +10,9 @@ class ExternalCallersTest(unittest.TestCase):
     def tearDown(self):
         return
 
-    def test_something(self):
-        pass
-        # TODO
-        # self.assertEqual(True, False)  # add assertion here
+    def test_eia_data(self):
+        caller = GridDataCaller("ISNE")
+        data = caller.fetch_timeseries_data()
+        assert data is not None
+        assert len(data) > 0
 
