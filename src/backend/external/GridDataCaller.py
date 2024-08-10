@@ -15,7 +15,7 @@ class GridDataCaller(AbstractExternalCaller):
         self.__ba = ba
         super().__init__()
 
-    def fetch_timeseries_data(self):
+    def fetch_timeseries_data(self) -> tuple:
         start_page = 0
         rows_fetched = 0
         df = pd.DataFrame()
@@ -31,8 +31,9 @@ class GridDataCaller(AbstractExternalCaller):
                 break
             else:
                 start_page += 1
-        #TODO: Formatting for ARIMA.
-        return df
+
+        formatted_df, holdout = self.__format_for_analysis(df)
+        return formatted_df, holdout
 
     def __recursively_fetch_data(self, offset):
         today = datetime.date.today()
@@ -70,3 +71,8 @@ class GridDataCaller(AbstractExternalCaller):
 
         self._log.info(f"{len(response_content['data'])} rows fetched")
         return response_content
+
+    def __format_for_analysis(self, df) -> (pd.DataFrame, float):
+        training_data = df.iloc[:(len(df) - 1)]
+        holdout_data = float(df.tail(1)['value'])
+        return pd.Series(list(training_data["value"])), holdout_data

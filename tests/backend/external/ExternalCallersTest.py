@@ -12,7 +12,8 @@ class ExternalCallersTest(unittest.TestCase):
 
     def test_eia_data(self):
         caller = GridDataCaller("ISNE")
-        data = caller.fetch_timeseries_data()
+        data, holdout = caller.fetch_timeseries_data()
         assert data is not None
         assert len(data) > 0
+        assert type(holdout) is float
 

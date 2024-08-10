@@ -12,5 +12,5 @@ class AbstractExternalCaller(ABC):
         return
 
     @abstractmethod
-    def fetch_timeseries_data(self) -> pd.DataFrame:
+    def fetch_timeseries_data(self) -> (pd.DataFrame, float):
         pass

@@ -20,7 +20,7 @@ class UserDAOTest(unittest.TestCase):
         user = User(user_id, "bob", None, "ISNE", 42.3552, -71.06578, None)
         self.dao.create(user)
 
-        user_from_db = self.dao.fetch(user_id)
+        user_from_db = self.dao.find_by_id(user_id)
         assert user_from_db is not None
         assert user_from_db == user
 
@@ -34,7 +34,7 @@ class UserDAOTest(unittest.TestCase):
         self.dao.create(user2)
         return user1, user2
 
-    def test_fetch_all(self):
+    def test_find_all(self):
         (user1, user2) = self.__create_two_users()
 
         users = self.dao.find_all()
@@ -46,8 +46,8 @@ class UserDAOTest(unittest.TestCase):
         (user1, user2) = self.__create_two_users()
 
         self.dao.delete(user1._id)
-        user_1_from_db = self.dao.fetch(user1._id)
-        user_2_from_db = self.dao.fetch(user2._id)
+        user_1_from_db = self.dao.find_by_id(user1._id)
+        user_2_from_db = self.dao.find_by_id(user2._id)
 
         assert user_1_from_db is None
         assert user_2_from_db is not None
@@ -57,8 +57,8 @@ class UserDAOTest(unittest.TestCase):
         (user1, user2) = self.__create_two_users()
 
         self.dao.truncate()
-        user_1_from_db = self.dao.fetch(user1._id)
-        user_2_from_db = self.dao.fetch(user2._id)
+        user_1_from_db = self.dao.find_by_id(user1._id)
+        user_2_from_db = self.dao.find_by_id(user2._id)
 
         assert user_1_from_db is None
         assert user_2_from_db is None

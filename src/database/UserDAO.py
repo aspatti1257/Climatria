@@ -36,7 +36,7 @@ class UserDAO:
     def shut_down(self):
         self.__client.close()
 
-    def fetch(self, user_id) -> User | None:
+    def find_by_id(self, user_id) -> User | None:
         collection = self.__collection_access()
         user_dict = collection.find_one({"_id": user_id})
         if user_dict is None:
@@ -48,7 +48,7 @@ class UserDAO:
     def find_all(self) -> list[User]:
         collection = self.__collection_access()
         users_as_dict = collection.find({})
-        # log.info("Fetching %s users from collection.", l))
+        # self.log.info("Fetching %s users from collection.", len(users_as_dict))
         return [self.__transform_to_user(user_dict) for user_dict in users_as_dict]
 
     def create(self, user):
