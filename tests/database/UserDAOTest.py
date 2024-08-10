@@ -17,42 +17,48 @@ class UserDAOTest(unittest.TestCase):
 
     def test_create_user(self):
         user_id = "bob@test.com"
-        user = User(user_id, "bob", "ISNE", 42.3552, -71.06578, None)
+        user = User(user_id, "bob", None, "ISNE", 42.3552, -71.06578, None)
         self.dao.create(user)
 
         user_from_db = self.dao.fetch(user_id)
         assert user_from_db is not None
         assert user_from_db == user
 
-    def test_delete_user(self):
+    def __create_two_users(self):
         user1_id = "ann@test.com"
-        user1 = User(user1_id, "ann", "ISNE", 42.3552, -71.06578, None)
+        user1 = User(user1_id, "ann", "15555555555", "ISNE", 42.3552, -71.06578, None)
         self.dao.create(user1)
 
         user2_id = "jen@test.com"
-        user2 = User(user2_id, "jen", "ISNE", 42.3552, -71.06578, None)
+        user2 = User(user2_id, "jen", "1-555-555-5555", "ISNE", 42.3552, -71.06578, None)
         self.dao.create(user2)
+        return user1, user2
 
-        self.dao.delete(user1_id)
-        user_1_from_db = self.dao.fetch(user1_id)
-        user_2_from_db = self.dao.fetch(user2_id)
+    def test_fetch_all(self):
+        (user1, user2) = self.__create_two_users()
+
+        users = self.dao.find_all()
+        assert len(users) == 2
+        assert users[0] == user1
+        assert users[1] == user2
+
+    def test_delete_user(self):
+        (user1, user2) = self.__create_two_users()
+
+        self.dao.delete(user1._id)
+        user_1_from_db = self.dao.fetch(user1._id)
+        user_2_from_db = self.dao.fetch(user2._id)
 
         assert user_1_from_db is None
         assert user_2_from_db is not None
         assert user_2_from_db == user2
 
     def test_truncate(self):
-        user1_id = "ann@test.com"
-        user1 = User(user1_id, "ann", "ISNE", 42.3552, -71.06578, None)
-        self.dao.create(user1)
-
-        user2_id = "jen@test.com"
-        user2 = User(user2_id, "jen", "ISNE", 42.3552, -71.06578, None)
-        self.dao.create(user2)
+        (user1, user2) = self.__create_two_users()
 
         self.dao.truncate()
-        user_1_from_db = self.dao.fetch(user1_id)
-        user_2_from_db = self.dao.fetch(user2_id)
+        user_1_from_db = self.dao.fetch(user1._id)
+        user_2_from_db = self.dao.fetch(user2._id)
 
         assert user_1_from_db is None
         assert user_2_from_db is None

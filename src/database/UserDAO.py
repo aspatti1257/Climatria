@@ -26,6 +26,13 @@ class UserDAO:
         collection = self.__client.get_database(self.__PRIMARY_DB).get_collection(self.__collection)
         return collection
 
+    @staticmethod
+    def __transform_to_user(self, user_as_dict) -> User:
+        # This is terrible. Need smarter deserialization into strongly typed objects.
+        return User(user_as_dict.get("_id"), user_as_dict.get("name"), user_as_dict.get("phone_number"),
+                    user_as_dict.get("ba"), user_as_dict.get("lat"), user_as_dict.get("long"),
+                    user_as_dict.get("last_alert"))
+
     def shut_down(self):
         self.__client.close()
 
@@ -36,10 +43,13 @@ class UserDAO:
             logging.info("User %s not found", user_id)
             return None
 
-        # This is terrible. Need smarter deserialization into strongly typed objects.
-        user = User(user_dict.get("_id"), user_dict.get("name"), user_dict.get("ba"), user_dict.get("lat"),
-                    user_dict.get("long"), user_dict.get("last_alert"))
-        return user
+        return self.__transform_to_user(user_dict)
+
+    def find_all(self) -> list[User]:
+        collection = self.__collection_access()
+        users_as_dict = collection.find({})
+        # log.info("Fetching %s users from collection.", l))
+        return [self.__transform_to_user(user_dict) for user_dict in users_as_dict]
 
     def create(self, user):
         user_dict = user.__dict__

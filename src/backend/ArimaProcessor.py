@@ -11,7 +11,7 @@ class ArimaProcessor:
         self.inputs = inputs
 
     def analyze(self) -> bool:
-        inputs = self.adf_test()
+        inputs = self._adf_test()
 
         # TODO: Iterate hyperparams to find best values.
         p = 0
@@ -25,7 +25,7 @@ class ArimaProcessor:
         return True
 
     # Perform an augmented Dickey Fuller Test
-    def adf_test(self):
+    def _adf_test(self):
         adf_test = adfuller(self.inputs)
         # self.log.info('ADF Stat determined to be: ', str(adf_test[0]))
         # self.log.info('p-value: ', str(adf_test[1]))
