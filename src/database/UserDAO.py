@@ -27,7 +27,7 @@ class UserDAO:
         return collection
 
     @staticmethod
-    def __transform_to_user(self, user_as_dict) -> User:
+    def __transform_to_user(user_as_dict) -> User:
         # This is terrible. Need smarter deserialization into strongly typed objects.
         return User(user_as_dict.get("_id"), user_as_dict.get("name"), user_as_dict.get("phone_number"),
                     user_as_dict.get("ba"), user_as_dict.get("lat"), user_as_dict.get("long"),
