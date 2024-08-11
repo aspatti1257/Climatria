@@ -1,4 +1,5 @@
 from src.backend.external.AbstractExternalCaller import AbstractExternalCaller
+from src.backend.ArimaResult import ArimaResult
 import json
 import requests
 import datetime
@@ -76,3 +77,8 @@ class GridDataCaller(AbstractExternalCaller):
         training_data = df.iloc[:(len(df) - 1)]
         holdout_data = float(df.tail(1)['value'])
         return pd.Series(list(training_data["value"])), holdout_data
+
+    def generate_prompt(self, arima_result: ArimaResult) -> str:
+        return ("It looks like there was an Electric Grid alert in your area. {Alert}. When the grid gets dirty one"
+                " easy thing you can do is buy Renewable Energy Credits to show your support for clean energy, which"
+                " you can do here: https://terrapass.com/product/productres-recs/")

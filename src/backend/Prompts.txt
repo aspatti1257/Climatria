@@ -1,8 +1,0 @@
-# TODO - PM: Add drafts here.
-GridDataCaller - <It looks like there was a Electric Grid alert in your area. {Alert}. When the grid gets dirty one easy thing you can do is buy Renewable Energy Credits to show your support for clean energy, which you can do here: https://terrapass.com/product/productres-recs/>
-
-SolarOutputCaller - <It looks like there was a Solar alert in your area. {Alert}. When solar power output drops you have to buy electricity from the grid to keep your house going. Check out this cool guide on net metering and how it effects your solar array: https://en.wikipedia.org/wiki/Net_metering>
-
-WaterQualityCaller - <It looks like there was a Water Quality alert in your area. {Alert}. When water quality drops it means pollution or algae is effecting the water you use to eat, drink, shower. While sometimes its hard to effect change in your specific area around water quality you can support a organization like https://water.org to help ensure others have consistently clean water>
-
-AirQualityCaller - <It looks like there was an Air Quality alert in your area. {Alert}. Planting trees is an easy and satisfying way to help clean up the air that positively impacts generations in the future. Organizations like Arbor Day https://www.arborday.org/ are great sources to contribute to afforestation.>

@@ -18,6 +18,7 @@ class ProcessingPipeline:
             grid_data_caller = GridDataCaller(user.ba)
             grid_data, holdout = grid_data_caller.fetch_timeseries_data()
             processor = ArimaProcessor(grid_data, holdout)
-            should_alert = processor.analyze()
-            if should_alert:
-                result = trigger.maybe_send_text("foo", user.phone_number)
+            arima_result = processor.analyze()
+            if arima_result.should_alert:
+                msg = grid_data_caller.generate_prompt(arima_result)
+                result = trigger.maybe_send_text(msg, user.phone_number)

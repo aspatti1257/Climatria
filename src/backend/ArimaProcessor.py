@@ -1,6 +1,7 @@
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.stattools import adfuller
 from src.LoggerFactory import LoggerFactory
+from src.backend.ArimaResult import ArimaResult
 import itertools
 
 
@@ -12,22 +13,24 @@ class ArimaProcessor:
         self.inputs = inputs
         self.holdout_val = holdout_val
 
-    def analyze(self) -> bool:  # TODO: Don't return a simple bool but forecast, confidence intervals.
+    def analyze(self) -> ArimaResult:  # TODO: Don't return a simple bool but forecast, confidence intervals.
         adf_inputs = self._adf_test()
 
         top_model = self._iterate_hyperparams(adf_inputs)
         forecast = top_model.fit().get_forecast(steps=1)
         conf_int = forecast.conf_int(alpha=0.05)
         yhat = forecast.predicted_mean
-        self.__log.info(yhat)  # Forecasted values
-        self.__log.info(conf_int)  # Confidence intervals
-        return bool(conf_int.iloc[0]["upper y"] < self.holdout_val)
+        self.__log.info("Predicted mean from top model: %s", yhat)  # Forecasted values
+        self.__log.info("Confidence intervals from top model prediction %s", conf_int)  # Confidence intervals
+
+        result = ArimaResult(bool(conf_int.iloc[0]["upper y"] < self.holdout_val), yhat, conf_int)
+        return result
 
     # Perform an augmented Dickey Fuller Test
     def _adf_test(self):
         adf_test = adfuller(self.inputs)
-        # self.log.info('ADF Stat determined to be: ', str(adf_test[0]))
-        # self.log.info('p-value: ', str(adf_test[1]))
+        self.__log.info("ADF Stat determined to be: ", str(adf_test[0]))
+        self.__log.info("p-value: ", str(adf_test[1]))
         if adf_test[1] > 0.05:
             return self.inputs.diff().dropna()
         else:
@@ -49,8 +52,8 @@ class ArimaProcessor:
                     best_pdq = param
                     top_model = model
             except ValueError as e:
-                self.__log.error(e)
+                self.__log.error("Error while performing ARIMA estimation: %s", e)
                 continue
-        self.__log.info(best_pdq)
+        self.__log.info("Best hyperparams (p, d, q) for ARIMA model chosen to be %s.", best_pdq)
         return top_model
 
