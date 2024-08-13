@@ -25,12 +25,12 @@ function Home() {
               variant="h3"
               component="h1"
               sx={{
-                color: "#FFFFFF", // White color
-                fontWeight: 600, // SemiBold weight
-                fontSize: "48px", // Font size
-                lineHeight: "120%", // Line height
+                color: "#FFFFFF",
+                fontWeight: 600,
+                fontSize: "48px",
+                lineHeight: "120%",
                 marginBottom: "1rem",
-                fontFamily: "'Poppins', sans-serif", // Apply Poppins font here
+                fontFamily: "'Poppins', sans-serif",
               }}
             >
               Support climate issues in your area when it needs YOU the most.
@@ -39,12 +39,12 @@ function Home() {
               variant="subtitle1"
               component="p"
               sx={{
-                color: "#FFFFFF", // White color
-                fontWeight: 400, // Regular weight
-                fontSize: "17px", // Font size
-                lineHeight: "140%", // Line height
-                marginBottom: "16px", // Margin bottom
-                fontFamily: "'Poppins', sans-serif", // Apply Poppins font
+                color: "#FFFFFF",
+                fontWeight: 400,
+                fontSize: "17px",
+                lineHeight: "140%",
+                marginBottom: "16px",
+                fontFamily: "'Poppins', sans-serif",
               }}
             >
               Real Time Alerting, with an Impact.
@@ -54,7 +54,7 @@ function Home() {
               src={treeImage}
               alt="Hero Graphic"
               sx={{
-                width: "100%", // Make the image responsive
+                width: "100%",
                 maxWidth: "200px",
                 margin: "0 auto",
                 bottom: "10px",
@@ -244,7 +244,7 @@ function Home() {
       <Box
         sx={{
           width: "100%",
-          backgroundColor: "#004e48", // Match background color in the image
+          backgroundColor: "#004e48",
           padding: "4rem 0",
           textAlign: "center",
           color: "#FFFFFF",
