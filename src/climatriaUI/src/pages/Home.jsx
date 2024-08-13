@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -6,6 +7,10 @@ import {
   Button,
   TextField,
   Checkbox,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   FormControlLabel,
 } from "@mui/material";
 import ElectricBoltOutlinedIcon from "@mui/icons-material/ElectricBoltOutlined";
@@ -13,6 +18,44 @@ import treeImage from "../assets/treeImage.svg";
 // import waveBorder from "../assets/waveBorder.svg";
 
 function Home() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    zipCode: "",
+    balancingAuthority: "",
+    frequency: "daily",
+    notifications: {
+      energy: false,
+      water: false,
+      airQuality: false,
+    },
+  });
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      notifications: {
+        ...prevData.notifications,
+        [name]: checked,
+      },
+    }));
+  };
+
+  const handleSubmit = () => {
+    // API call can be made here with formData
+    console.log(formData);
+  };
+
   return (
     <>
       <Box
@@ -137,7 +180,13 @@ function Home() {
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <FormControlLabel
-                  control={<Checkbox defaultChecked />}
+                  control={
+                    <Checkbox
+                      checked={formData.notifications.energy}
+                      onChange={handleCheckboxChange}
+                      name="energy"
+                    />
+                  }
                   label={
                     <Box
                       sx={{
@@ -161,7 +210,13 @@ function Home() {
                   }
                 />
                 <FormControlLabel
-                  control={<Checkbox />}
+                  control={
+                    <Checkbox
+                      checked={formData.notifications.water}
+                      onChange={handleCheckboxChange}
+                      name="water"
+                    />
+                  }
                   label={
                     <Box
                       sx={{
@@ -181,7 +236,13 @@ function Home() {
                   }
                 />
                 <FormControlLabel
-                  control={<Checkbox />}
+                  control={
+                    <Checkbox
+                      checked={formData.notifications.airQuality}
+                      onChange={handleCheckboxChange}
+                      name="airQuality"
+                    />
+                  }
                   label={
                     <Box
                       sx={{
@@ -208,32 +269,64 @@ function Home() {
                   variant="outlined"
                   fullWidth
                   sx={{ marginBottom: "1rem" }}
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
                 />
                 <TextField
                   label="Email"
                   variant="outlined"
                   fullWidth
                   sx={{ marginBottom: "1rem" }}
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                 />
                 <TextField
                   label="Phone Number"
                   variant="outlined"
                   fullWidth
                   sx={{ marginBottom: "1rem" }}
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
                 />
                 <TextField
                   label="Zip Code"
                   variant="outlined"
                   fullWidth
                   sx={{ marginBottom: "1rem" }}
+                  name="zipCode"
+                  value={formData.zipCode}
+                  onChange={handleInputChange}
                 />
                 <TextField
-                  label="Frequency"
+                  label="Balancing Authority"
                   variant="outlined"
                   fullWidth
                   sx={{ marginBottom: "1rem" }}
+                  name="balancingAuthority"
+                  value={formData.balancingAuthority}
+                  onChange={handleInputChange}
                 />
-                <Button variant="contained" color="primary" fullWidth>
+                <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
+                  <InputLabel>Frequency</InputLabel>
+                  <Select
+                    label="Frequency"
+                    name="frequency"
+                    value={formData.frequency}
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value="daily">Daily</MenuItem>
+                    <MenuItem value="weekly">Weekly</MenuItem>
+                  </Select>
+                </FormControl>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={handleSubmit}
+                >
                   Sign Up
                 </Button>
               </Grid>
