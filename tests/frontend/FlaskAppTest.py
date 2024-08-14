@@ -9,14 +9,11 @@ app = Flask(__name__)
 class FlaskAppTest(unittest.TestCase):
 
     def setUp(self):
-        local_host = "127.0.0.1"
-        port = 8080
-        app.run(host=local_host, port=port, debug=True)
-        return
+        pass
+
 
     def tearDown(self):
-        app.url_map._rules.clear()
-        return
+        pass
 
     def test_basic_app(self):
         assert True
