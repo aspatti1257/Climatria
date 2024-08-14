@@ -13,7 +13,12 @@ import {
   MenuItem,
   FormControlLabel,
 } from "@mui/material";
-import ElectricBoltOutlinedIcon from "@mui/icons-material/ElectricBoltOutlined";
+import ElectricalServicesOutlinedIcon from "@mui/icons-material/ElectricalServicesOutlined";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import HealthAndSafetyOutlinedIcon from "@mui/icons-material/HealthAndSafetyOutlined";
+import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
+import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
+import ForestOutlinedIcon from "@mui/icons-material/ForestOutlined";
 import treeImage from "../assets/treeImage.svg";
 // import waveBorder from "../assets/waveBorder.svg";
 
@@ -195,7 +200,7 @@ function Home() {
                       }}
                     >
                       <strong>“Dirty” Energy on the Grid</strong>
-                      <ElectricBoltOutlinedIcon
+                      <ElectricalServicesOutlinedIcon
                         sx={{ marginRight: "0.5rem" }}
                       />{" "}
                       <Typography
@@ -224,7 +229,10 @@ function Home() {
                         fontFamily: "'Poppins', sans-serif",
                       }}
                     >
-                      <strong>Water Quality is Low 💧</strong>
+                      <strong>Water Quality is Low</strong>
+                      <WaterDropOutlinedIcon
+                        sx={{ marginRight: "0.5rem" }}
+                      />{" "}
                       <Typography
                         variant="body2"
                         sx={{ fontSize: "14px", color: "#555555" }}
@@ -250,7 +258,8 @@ function Home() {
                         fontFamily: "'Poppins', sans-serif",
                       }}
                     >
-                      <strong>Air Quality is Low 🌿</strong>
+                      <strong>Air Quality is Low</strong>
+                      <ForestOutlinedIcon sx={{ marginRight: "0.5rem" }} />{" "}
                       <Typography
                         variant="body2"
                         sx={{ fontSize: "14px", color: "#555555" }}
@@ -355,7 +364,6 @@ function Home() {
           >
             Why Climatria?
           </Typography>
-
           <Grid container spacing={4}>
             <Grid item xs={12} md={4}>
               <Box
@@ -366,14 +374,11 @@ function Home() {
                   textAlign: "center",
                 }}
               >
-                <Box
-                  component="img"
-                  // src={/* Insert path to bell icon */}
-                  alt="Real-time alerts icon"
+                <NotificationsNoneIcon
                   sx={{
-                    width: "40px",
-                    height: "40px",
+                    fontSize: "80px",
                     marginBottom: "1rem",
+                    color: "#FFFFFF",
                   }}
                 />
                 <Typography
@@ -410,14 +415,11 @@ function Home() {
                   textAlign: "center",
                 }}
               >
-                <Box
-                  component="img"
-                  // src={/* Insert path to handshake icon */}
-                  alt="Direct impact icon"
+                <HealthAndSafetyOutlinedIcon
                   sx={{
-                    width: "40px",
-                    height: "40px",
+                    fontSize: "80px",
                     marginBottom: "1rem",
+                    color: "#FFFFFF",
                   }}
                 />
                 <Typography
@@ -454,14 +456,11 @@ function Home() {
                   textAlign: "center",
                 }}
               >
-                <Box
-                  component="img"
-                  // src={/* Insert path to book icon */}
-                  alt="Learn about issues icon"
+                <MenuBookOutlinedIcon
                   sx={{
-                    width: "40px",
-                    height: "40px",
+                    fontSize: "80px",
                     marginBottom: "1rem",
+                    color: "#FFFFFF",
                   }}
                 />
                 <Typography
