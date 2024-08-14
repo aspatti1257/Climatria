@@ -28,10 +28,14 @@ class UserDAO:
 
     @staticmethod
     def __transform_to_user(user_as_dict) -> User:
-        # This is terrible. Need smarter deserialization into strongly typed objects.
-        return User(user_as_dict.get("_id"), user_as_dict.get("name"), user_as_dict.get("phone_number"),
-                    user_as_dict.get("ba"), user_as_dict.get("lat"), user_as_dict.get("long"),
-                    user_as_dict.get("last_alert"))
+        return User(
+            email=user_as_dict.get("_id"),
+            name=user_as_dict.get("name"),
+            phone_number=user_as_dict.get("phone_number"),
+            ba=user_as_dict.get("ba"),
+            zip_code=user_as_dict.get("zip_code"),
+            last_alert=user_as_dict.get("last_alert")
+        )
 
     def shut_down(self):
         self.__client.close()
