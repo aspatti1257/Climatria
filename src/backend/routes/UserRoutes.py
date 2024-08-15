@@ -28,7 +28,7 @@ def signup():
             zip_code=data.get('zipCode'),
             last_alert=None
         )
-        parser = CredentialParser("../../credentials.txt")
+        parser = CredentialParser("credentials.txt")
         creds = parser.fetch_credentials()
         # Interact with the database using UserDAO
         user_dao = UserDAO(creds[0], creds[1])

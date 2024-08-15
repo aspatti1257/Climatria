@@ -29,8 +29,8 @@ class ArimaProcessor:
     # Perform an augmented Dickey Fuller Test
     def _adf_test(self):
         adf_test = adfuller(self.inputs)
-        self.__log.info("ADF Stat determined to be: ", str(adf_test[0]))
-        self.__log.info("p-value: ", str(adf_test[1]))
+        self.__log.info("ADF Stat determined to be: %s", str(adf_test[0]))
+        self.__log.info("p-value: %s", str(adf_test[1]))
         if adf_test[1] > 0.05:
             return self.inputs.diff().dropna()
         else:

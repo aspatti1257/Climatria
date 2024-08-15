@@ -5,7 +5,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from flask import Flask
-from routes.UserRoutes import user_blueprint
+from src.backend.routes.UserRoutes import user_blueprint
 from src.LoggerFactory import LoggerFactory
 
 # Set up the logger
