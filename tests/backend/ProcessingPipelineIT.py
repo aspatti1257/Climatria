@@ -11,7 +11,6 @@ class ProcessingPipelineIT(unittest.TestCase):
     def setUp(self):
         self.dao = self.__init_mongo()
         self.dao.truncate()
-        self.__populate_mongo()
 
     def tearDown(self):
         pass
@@ -22,11 +21,15 @@ class ProcessingPipelineIT(unittest.TestCase):
         dao = UserDAO(creds[0], creds[1], "test_users")
         return dao
 
-    def __populate_mongo(self):
-        user_id = "bob@test.com"
-        user = User(user_id, "bob", "12033824115", "ISNE", 42.3552, -71.06578, None)
+    def __populate_mongo(self, user):
         self.dao.create(user)
 
     def test_full_pipeline(self):
+        self.__populate_mongo(User("bob@test.com", "bob", "12033824115", "ISNE", 12345))
+        pipeline = ProcessingPipeline(self.dao)
+        pipeline.process()
+
+    def test_bogus_user(self):
+        self.__populate_mongo(User("bad@test.com", "bad", "15555555555", "BOGUS", 12345))
         pipeline = ProcessingPipeline(self.dao)
         pipeline.process()

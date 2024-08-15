@@ -19,6 +19,13 @@ class ExternalCallersTest(unittest.TestCase):
         assert len(data) > 0
         assert type(holdout) is float
 
+    def test_bogus_eia_data(self):
+        caller = GridDataCaller("BOGUS")
+        data, holdout = caller.fetch_timeseries_data()
+        assert data is not None
+        assert len(data) == 0
+        assert holdout == 0
+
     def test_msg_generation(self):
         caller = GridDataCaller("ISNE")
         yhat = pd.Series([float(1)])

@@ -32,7 +32,9 @@ class GridDataCaller(AbstractExternalCaller):
                 break
             else:
                 start_page += 1
-
+        if df.size < 2:
+            self._log.info("No data detected for BA: %s.", self.__ba)
+            return pd.Series(), 0
         formatted_df, holdout = self.__format_for_analysis(df)
         return formatted_df, holdout
 

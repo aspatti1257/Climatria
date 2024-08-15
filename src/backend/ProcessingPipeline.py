@@ -20,10 +20,11 @@ class ProcessingPipeline:
         for user in users:  # TODO: Multi-threading
             grid_data_caller = GridDataCaller(user.ba)
             grid_data, holdout = grid_data_caller.fetch_timeseries_data()
-            processor = ArimaProcessor(grid_data, holdout)
-            arima_result = processor.analyze()
-            if arima_result.should_alert:
-                msg = grid_data_caller.generate_prompt(arima_result)
-                result = trigger.maybe_send_text(msg, user.phone_number)
+            if len(grid_data) > 0:
+                processor = ArimaProcessor(grid_data, holdout)
+                arima_result = processor.analyze()
+                if arima_result.should_alert:
+                    msg = grid_data_caller.generate_prompt(arima_result)
+                    result = trigger.maybe_send_text(msg, user.phone_number)
 
         self.__log.info("Parsed %s total users and sent %s total triggers.", len(users), trigger.send_count)

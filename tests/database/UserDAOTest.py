@@ -17,7 +17,7 @@ class UserDAOTest(unittest.TestCase):
 
     def test_create_user(self):
         user_id = "bob@test.com"
-        user = User(user_id, "bob", None, "ISNE", 42.3552, -71.06578, None)
+        user = User(user_id, "bob", None, "ISNE", 12345)
         self.dao.create(user)
 
         user_from_db = self.dao.find_by_id(user_id)
@@ -26,11 +26,11 @@ class UserDAOTest(unittest.TestCase):
 
     def __create_two_users(self):
         user1_id = "ann@test.com"
-        user1 = User(user1_id, "ann", "15555555555", "ISNE", 42.3552, -71.06578, None)
+        user1 = User(user1_id, "ann", "15555555555", "ISNE", 12345)
         self.dao.create(user1)
 
         user2_id = "jen@test.com"
-        user2 = User(user2_id, "jen", "1-555-555-5555", "ISNE", 42.3552, -71.06578, None)
+        user2 = User(user2_id, "jen", "1-555-555-5555", "ISNE", 12345)
         self.dao.create(user2)
         return user1, user2
 
