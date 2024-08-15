@@ -4,6 +4,7 @@ import sinch.domains.sms.exceptions
 from sinch import SinchClient
 from sinch.domains.sms import SendSMSBatchResponse
 from sinch.domains.verification import StartVerificationResponse
+from sinch.domains.verification import ReportVerificationByIdResponse
 
 from src.LoggerFactory import LoggerFactory
 from sinch.domains.verification.models import VerificationIdentity
@@ -15,7 +16,7 @@ class SinchTrigger:
     __SENDING_PHONE_NUMBER = "12085813502"
 
     def __init__(self):
-        self.sinch_client = SinchClient(
+        self.__sinch_client = SinchClient(
             key_id="138af651-4dac-469f-8eeb-e46e5669230d",
             key_secret="9i.bJXxg1PKgV7QCh.iCCpBPKn",
             project_id="542c4b93-d223-4715-bf18-8497abc5e435",
@@ -39,7 +40,7 @@ class SinchTrigger:
 
     def __send_text(self, msg, formatted_phone) -> SendSMSBatchResponse | None:
         try:
-            send_batch_response = self.sinch_client.sms.batches.send(
+            send_batch_response = self.__sinch_client.sms.batches.send(
                 body=msg,
                 to=[f"{formatted_phone}"],
                 from_=self.__SENDING_PHONE_NUMBER,
@@ -59,14 +60,16 @@ class SinchTrigger:
             self.__log.info("Improperly formatted phone number: %s", formatted_phone)
             return None
         try:
-            response = self.__verify(formatted_phone)
+            response = self.__start_verify(formatted_phone)
             return response
         except sinch.domains.sms.exceptions.SMSException as exception:
             self.__log.error("Failed to start sms verification: %s", exception)
             return None
+        except Exception as exception:
+            self.__log.error("Failed to start sms verification: %s", exception)
 
-    def __verify(self, phone_number):
-        response = self.sinch_client.verification.verifications.start_sms(
+    def __start_verify(self, phone_number):
+        response = self.__sinch_client.verification.verifications.start_sms(
             identity=VerificationIdentity(
                 type="number",
                 endpoint=phone_number
@@ -75,5 +78,18 @@ class SinchTrigger:
         self.__log.info("Verified SMS with identity: %s", response)
         return response
 
+    def report_code(self, report_id, code) -> ReportVerificationByIdResponse:
+        response = self.__sinch_client.verification.verifications.report_by_id(
+            id=report_id,
+            verification_report_request={
+                "code": code
+            }
+        )
+        return response
+
     def __format_number(self, phone_number):
-        return phone_number.strip().replace("-", "")
+        formatted_number = phone_number.strip().replace("-", "")
+        if formatted_number.startswith("+"):
+            return formatted_number
+        else:
+            return "+" + formatted_number

@@ -37,6 +37,13 @@ function Home() {
     },
   });
 
+  const [showVerification, setShowVerification] = useState(false);
+
+  const [verificationData, setVerificationData] = useState({
+      verificationId: "",
+      code: "",
+  })
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
@@ -44,6 +51,14 @@ function Home() {
       [name]: value,
     }));
   };
+
+  const handleVerifyChange = (event) => {
+      const { name, value } = event.target;
+      setVerificationData((prevData) => ({
+          ...prevData,
+          [name]: value
+      }));
+  }
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -56,7 +71,50 @@ function Home() {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleStartVerify = async () => {
+    try {
+      const startVerificationResponse = await fetch("http://127.0.0.1:8080/api/start_verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (startVerificationResponse.ok) {
+          const data = await startVerificationResponse.json();
+          console.log(data.verificationId);
+          setVerificationData({
+              verificationId: data.verificationId,
+              code: "YOUR CODE HERE"
+          });
+          setShowVerification(true);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleCodeSubmit = async () => {
+      try {
+        const reportCodeResponse = await fetch("http://127.0.0.1:8080/api/report_code", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(verificationData),
+        });
+        if (reportCodeResponse.ok) {
+          const data = await reportCodeResponse.json();
+          if (data) {
+              await handleFormSubmit();
+          }
+        }
+      } catch (error) {
+        console.error("Error:", error)
+      }
+  }
+
+  const handleFormSubmit = async () => {
     try {
       const response = await fetch("http://127.0.0.1:8080/api/signup", {
         method: "POST",
@@ -68,6 +126,7 @@ function Home() {
 
       if (response.ok) {
         console.log("User signed up successfully");
+        setShowVerification(false);
       } else {
         console.error("Failed to sign up user");
       }
@@ -197,8 +256,28 @@ function Home() {
               textAlign: "left",
             }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+            {showVerification ?
+              <Grid container spacing={2}>
+                <TextField
+                  label="Code"
+                  variant="outlined"
+                  fullWidth
+                  sx={{marginBottom: "1rem"}}
+                  name="code"
+                  value={verificationData.code}
+                  onChange={handleVerifyChange}
+                />
+              <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={handleCodeSubmit}
+              >
+                  Verify
+              </Button>
+              </Grid> :
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -286,8 +365,7 @@ function Home() {
                   }
                 />
               </Grid>
-
-              <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6}>
                 <TextField
                   label="Name"
                   variant="outlined"
@@ -349,12 +427,13 @@ function Home() {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  onClick={handleSubmit}
+                  onClick={handleStartVerify}
                 >
                   Sign Up
                 </Button>
               </Grid>
-            </Grid>
+              </Grid>
+            }
           </Box>
         </Container>
       </Box>
