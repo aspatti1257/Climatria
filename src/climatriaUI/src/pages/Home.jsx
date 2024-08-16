@@ -40,8 +40,8 @@ function Home() {
   const [showVerification, setShowVerification] = useState(false);
 
   const [verificationData, setVerificationData] = useState({
-      verificationId: "",
-      code: "",
+    verificationId: "",
+    code: "",
   })
 
   const handleInputChange = (event) => {
@@ -53,11 +53,11 @@ function Home() {
   };
 
   const handleVerifyChange = (event) => {
-      const { name, value } = event.target;
+    const { name, value } = event.target;
       setVerificationData((prevData) => ({
-          ...prevData,
-          [name]: value
-      }));
+        ...prevData,
+        [name]: value
+    }));
   }
 
   const handleCheckboxChange = (event) => {
@@ -95,24 +95,24 @@ function Home() {
   };
 
   const handleCodeSubmit = async () => {
-      try {
-        const reportCodeResponse = await fetch("http://127.0.0.1:8080/api/report_code", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(verificationData),
-        });
-        if (reportCodeResponse.ok) {
-          const data = await reportCodeResponse.json();
-          if (data) {
-              await handleFormSubmit();
-          }
+    try {
+      const reportCodeResponse = await fetch("http://127.0.0.1:8080/api/report_code", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(verificationData),
+      });
+      if (reportCodeResponse.ok) {
+        const data = await reportCodeResponse.json();
+        if (data) {
+            await handleFormSubmit();
         }
-      } catch (error) {
-        console.error("Error:", error)
       }
-  }
+    } catch (error) {
+      console.error("Error:", error)
+    }
+  };
 
   const handleFormSubmit = async () => {
     try {
