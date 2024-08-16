@@ -18,7 +18,8 @@ app.register_blueprint(user_blueprint)
 
 
 def setup_flask():
-    local_host = "127.0.0.1"
+    # Change the host from "127.0.0.1" to "0.0.0.0" to allow external connections
+    local_host = "0.0.0.0"
     port = 8080
     log.info("Setting up the Flask application on host: %s and port %s.", local_host, port)
 

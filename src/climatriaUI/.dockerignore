@@ -1,0 +1,22 @@
+# Ignore node_modules for the frontend
+node_modules
+
+# Ignore package-lock.json
+package-lock.json
+
+# Ignore local environment files
+.env
+
+# Ignore logs
+*.log
+
+# Ignore other unnecessary files
+.vscode
+.idea
+.DS_Store
+*.pyc
+__pycache__
+
+# Ignore build artifacts
+dist
+build
