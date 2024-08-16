@@ -37,6 +37,8 @@ function Home() {
     },
   });
 
+  const API_BASE_URL = "http://3.145.3.230:8080";
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
@@ -58,7 +60,7 @@ function Home() {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/signup", {
+      const response = await fetch(`${API_BASE_URL}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
