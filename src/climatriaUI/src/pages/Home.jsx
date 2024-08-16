@@ -37,6 +37,8 @@ function Home() {
     },
   });
 
+  const API_BASE_URL = "http://3.145.3.230:8080";
+
   const [showVerification, setShowVerification] = useState(false);
 
   const [verificationData, setVerificationData] = useState({
@@ -73,7 +75,7 @@ function Home() {
 
   const handleStartVerify = async () => {
     try {
-      const startVerificationResponse = await fetch("http://127.0.0.1:8080/api/start_verification", {
+      const startVerificationResponse = await fetch(`${API_BASE_URL}/api/start_verification`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +98,7 @@ function Home() {
 
   const handleCodeSubmit = async () => {
     try {
-      const reportCodeResponse = await fetch("http://127.0.0.1:8080/api/report_code", {
+      const reportCodeResponse = await fetch(`${API_BASE_URL}/api/report_code`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -116,7 +118,7 @@ function Home() {
 
   const handleFormSubmit = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/signup", {
+      const response = await fetch(`${API_BASE_URL}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
