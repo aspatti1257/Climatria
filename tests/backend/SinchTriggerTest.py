@@ -11,8 +11,6 @@ class SinchTriggerTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-
-
     @patch.object(SinchTrigger, '_SinchTrigger__send_text', new_callable=PropertyMock)
     def test_valid_phone_send(self, mock__send_text):
         mock__send_text.send.return_value = "test"
@@ -39,12 +37,12 @@ class SinchTriggerTest(unittest.TestCase):
             response = self.trigger.maybe_send_text("foo", num)
             assert response is None
 
-    @patch.object(SinchTrigger, '_SinchTrigger__verify', new_callable=PropertyMock)
+    @patch.object(SinchTrigger, '_SinchTrigger__start_verify', new_callable=PropertyMock)
     def test_verify_valid(self, mock_verify):
         mock_verify.send.return_value = True
         response = self.trigger.attempt_verify("+15555555555")
         assert response is not None
 
     def test_verify_invalid(self):
-        response = self.trigger.attempt_verify("15555555555")
+        response = self.trigger.attempt_verify("555-555-5555")
         assert response is None

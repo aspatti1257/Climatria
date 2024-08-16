@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from src.database.UserDAO import UserDAO
 from src.LoggerFactory import LoggerFactory
 from src.backend.User import User
+from src.backend.SinchTrigger import SinchTrigger
 
 # Initialize the blueprint
 user_blueprint = Blueprint('user', __name__)
@@ -9,7 +10,41 @@ user_blueprint = Blueprint('user', __name__)
 # Set up the logger
 log = LoggerFactory.create_log(__name__)
 
+# Interact with the database using UserDAO
 user_dao = UserDAO()
+
+# Set up the messaging service for verification
+sinch = SinchTrigger()
+
+
+@user_blueprint.route('/api/start_verification', methods=['POST'])
+def start_verification():
+    data = request.json
+    if not data:
+        log.warning("No data provided in the signup request.")
+        return jsonify({"error": "No data provided."}), 400
+    try:
+        phone_number = data.get("phoneNumber")
+        verification_result = sinch.attempt_verify(phone_number)
+        # TODO: In memory cache would avoid the need to send this to the client.
+        return jsonify({'verificationId': verification_result.id}), 200
+    except Exception as e:
+        log.error(e)
+
+
+@user_blueprint.route('/api/report_code', methods=['POST'])
+def finalize_verification():
+    data = request.json
+    if not data:
+        log.warning("No verification code in the signup request.")
+        return jsonify({"error": "No data provided."}), 400
+    try:
+        code = data.get("code")
+        verification_id = data.get("verificationId")
+        response = sinch.report_code(verification_id, code)
+        return jsonify({'verificationResponse': response}), 200
+    except Exception as e:
+        log.error(e)
 
 
 @user_blueprint.route('/api/signup', methods=['POST'])
@@ -24,7 +59,7 @@ def signup():
         user = User(
             email=data.get('email'),
             name=data.get('name'),
-            phone_number=data.get('phone_number'),
+            phone_number=data.get('phoneNumber'),
             ba=data.get('balancingAuthority'),
             zip_code=data.get('zipCode'),
             last_alert=None
