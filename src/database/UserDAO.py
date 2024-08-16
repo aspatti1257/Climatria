@@ -12,10 +12,10 @@ class UserDAO:
     __CLUSTER_ID = "climatria.6oxhz.mongodb.net"
     __PRIMARY_DB = "climatria"
 
-    def __init__(self, username, password, collection="users"):
+    def __init__(self, collection="users"):
         try:
-            self.__client = pymongo.MongoClient(
-                "mongodb+srv://" + username + ":" + password + "@" + self.__CLUSTER_ID)
+            # TODO: Rotate this out later and pass in via sys prop.
+            self.__client = pymongo.MongoClient("mongodb+srv://aspatti1257:54yNOy0h8XczIohy@" + self.__CLUSTER_ID)
             self.__collection = collection
             self.__log.info("Connected to MongoDB " + self.__CLUSTER_ID)
         except pymongo.errors.ConfigurationError as error:

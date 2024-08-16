@@ -1,15 +1,12 @@
 import unittest
 from src.backend.User import User
 from src.database.UserDAO import UserDAO
-from src.database.CredentialParser import CredentialParser
 
 
 class UserDAOTest(unittest.TestCase):
 
     def setUp(self):
-        parser = CredentialParser("../../credentials.txt")
-        creds = parser.fetch_credentials()
-        self.dao = UserDAO(creds[0], creds[1], "test_users")  # DO NOT REMOVE "test_users" argument!
+        self.dao = UserDAO("test_users")  # DO NOT REMOVE "test_users" argument!
         self.dao.truncate()
 
     def tearDown(self):
