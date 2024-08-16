@@ -47,7 +47,6 @@ def finalize_verification():
         log.error(e)
 
 
-
 @user_blueprint.route('/api/signup', methods=['POST'])
 def signup():
     data = request.json
@@ -60,7 +59,7 @@ def signup():
         user = User(
             email=data.get('email'),
             name=data.get('name'),
-            phone_number=data.get('phone_number'),
+            phone_number=data.get('phoneNumber'),
             ba=data.get('balancingAuthority'),
             zip_code=data.get('zipCode'),
             last_alert=None
