@@ -32,7 +32,7 @@ class SinchTrigger:
 
         formatted_phone = self.__format_number(phone_number)
 
-        if not re.search(re.compile("^\\d{11}$"), formatted_phone):
+        if not re.search(re.compile("^\\+\\d{11}$"), formatted_phone):
             self.__log.info("Improperly formatted phone number: %s", formatted_phone)
             return None
 
@@ -67,6 +67,7 @@ class SinchTrigger:
             return None
         except Exception as exception:
             self.__log.error("Failed to start sms verification: %s", exception)
+            return None
 
     def __start_verify(self, phone_number):
         response = self.__sinch_client.verification.verifications.start_sms(
