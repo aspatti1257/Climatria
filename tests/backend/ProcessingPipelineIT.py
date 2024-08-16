@@ -1,6 +1,5 @@
 import unittest
 from src.backend.ProcessingPipeline import ProcessingPipeline
-from src.database.CredentialParser import CredentialParser
 from src.database.UserDAO import UserDAO
 from src.backend.User import User
 
@@ -9,17 +8,11 @@ from src.backend.User import User
 class ProcessingPipelineIT(unittest.TestCase):
 
     def setUp(self):
-        self.dao = self.__init_mongo()
+        self.dao = UserDAO("test_users")
         self.dao.truncate()
 
     def tearDown(self):
         pass
-
-    def __init_mongo(self):
-        parser = CredentialParser("../../credentials.txt")
-        creds = parser.fetch_credentials()
-        dao = UserDAO(creds[0], creds[1], "test_users")
-        return dao
 
     def __populate_mongo(self, user):
         self.dao.create(user)
