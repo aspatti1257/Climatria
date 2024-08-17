@@ -19,7 +19,11 @@ import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
 import ForestOutlinedIcon from "@mui/icons-material/ForestOutlined";
 import ElectricalServicesOutlinedIcon from "@mui/icons-material/ElectricalServicesOutlined";
 
-const FormSection = ({ balancingAuthorities, VITE_BASE_URL }) => {
+const FormSection = ({
+  balancingAuthorities,
+  VITE_BASE_URL,
+  onSignupSuccess,
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -111,6 +115,7 @@ const FormSection = ({ balancingAuthorities, VITE_BASE_URL }) => {
 
         if (response.ok) {
           console.log("User signed up successfully");
+          onSignupSuccess();
         } else {
           console.error("Failed to sign up user");
         }
@@ -321,6 +326,7 @@ const FormSection = ({ balancingAuthorities, VITE_BASE_URL }) => {
 FormSection.propTypes = {
   balancingAuthorities: PropTypes.arrayOf(PropTypes.string).isRequired,
   VITE_BASE_URL: PropTypes.string.isRequired,
+  onSignupSuccess: PropTypes.func.isRequired,
 };
 
 export default FormSection;

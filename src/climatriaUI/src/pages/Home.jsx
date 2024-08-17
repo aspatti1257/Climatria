@@ -1,17 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Box, Typography, Container, Grid } from "@mui/material";
 import FormSection from "../components/FormSection";
 import Unsubscribe from "../components/Unsubscribe";
+import Welcome from "../components/Welcome";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import HealthAndSafetyOutlinedIcon from "@mui/icons-material/HealthAndSafetyOutlined";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 
 import treeImage from "../assets/treeImage.svg";
 
-function Home({ isUnsubscribing, VITE_BASE_URL }) {
+function Home({ isUnsubscribing, setIsUnsubscribing, VITE_BASE_URL }) {
   const [balancingAuthorities, setBalancingAuthorities] = useState([]);
-  const formSectionRef = useRef(null);
+  const [isSignedUp, setIsSignedUp] = useState(false);
 
   useEffect(() => {
     const fetchBalancingAuthorities = async () => {
@@ -33,11 +34,10 @@ function Home({ isUnsubscribing, VITE_BASE_URL }) {
     fetchBalancingAuthorities();
   }, []);
 
-  useEffect(() => {
-    if (isUnsubscribing && formSectionRef.current) {
-      formSectionRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [isUnsubscribing]);
+  const handleUnsubscribe = () => {
+    setIsUnsubscribing(true);
+    setIsSignedUp(false); // This hides the Welcome component
+  };
 
   return (
     <>
@@ -97,7 +97,6 @@ function Home({ isUnsubscribing, VITE_BASE_URL }) {
           color: "#FFFFFF",
           textAlign: "center",
         }}
-        ref={formSectionRef} // Add the ref here
       >
         <Container maxWidth="md">
           <Typography
@@ -151,13 +150,19 @@ function Home({ isUnsubscribing, VITE_BASE_URL }) {
             community immediately.
           </Typography>
 
-          {isUnsubscribing ? (
-            <Unsubscribe />
+          {/* Conditionally render Welcome, Unsubscribe, or FormSection */}
+          {!isSignedUp ? (
+            isUnsubscribing ? (
+              <Unsubscribe />
+            ) : (
+              <FormSection
+                balancingAuthorities={balancingAuthorities}
+                VITE_BASE_URL={VITE_BASE_URL}
+                onSignupSuccess={() => setIsSignedUp(true)}
+              />
+            )
           ) : (
-            <FormSection
-              balancingAuthorities={balancingAuthorities}
-              VITE_BASE_URL={VITE_BASE_URL}
-            />
+            <Welcome onUnsubscribe={handleUnsubscribe} />
           )}
         </Container>
       </Box>
