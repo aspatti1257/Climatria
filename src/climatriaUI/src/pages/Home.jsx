@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import validate from "validate.js";
 import {
   Box,
   Typography,
@@ -37,14 +38,39 @@ function Home() {
     },
   });
 
+  const [formErrors, setFormErrors] = useState({});
+
   const API_BASE_URL = "http://3.145.3.230:8080";
 
-  const [showVerification, setShowVerification] = useState(false);
-
-  const [verificationData, setVerificationData] = useState({
-    verificationId: "",
-    code: "",
-  })
+  const schema = useMemo(
+    () => ({
+      name: {
+        presence: { allowEmpty: false, message: "is required" },
+        length: { maximum: 128 },
+      },
+      email: {
+        presence: { allowEmpty: false, message: "is required" },
+        email: { message: "is not valid" },
+        length: { maximum: 300 },
+      },
+      phoneNumber: {
+        presence: { allowEmpty: false, message: "is required" },
+        format: {
+          pattern: /^\+?\d{11,12}$/,
+          message:
+            "must be a valid phone number with country code (11-12 digits)",
+        },
+      },
+      zipCode: {
+        presence: { allowEmpty: false, message: "is required" },
+        format: {
+          pattern: /^\d{5}(-\d{4})?$/,
+          message: "must be a valid zip code",
+        },
+      },
+    }),
+    []
+  );
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -53,14 +79,6 @@ function Home() {
       [name]: value,
     }));
   };
-
-  const handleVerifyChange = (event) => {
-    const { name, value } = event.target;
-      setVerificationData((prevData) => ({
-        ...prevData,
-        [name]: value
-    }));
-  }
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -73,69 +91,33 @@ function Home() {
     }));
   };
 
-  const handleStartVerify = async () => {
-    try {
-      const startVerificationResponse = await fetch(`${API_BASE_URL}/api/start_verification`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      if (startVerificationResponse.ok) {
-          const data = await startVerificationResponse.json();
-          console.log(data.verificationId);
-          setVerificationData({
-              verificationId: data.verificationId,
-              code: "YOUR CODE HERE"
-          });
-          setShowVerification(true);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  const handleSubmit = async () => {
+    // Validate the form data
+    const errors = validate(formData, schema);
+    setFormErrors(errors || {});
 
-  const handleCodeSubmit = async () => {
-    try {
-      const reportCodeResponse = await fetch(`${API_BASE_URL}/api/report_code`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(verificationData),
-      });
-      if (reportCodeResponse.ok) {
-        const data = await reportCodeResponse.json();
-        if (data) {
-            await handleFormSubmit();
+    if (!errors) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/signup`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          console.log("User signed up successfully");
+        } else {
+          console.error("Failed to sign up user");
         }
+      } catch (error) {
+        console.error("Error:", error);
       }
-    } catch (error) {
-      console.error("Error:", error)
     }
   };
 
-  const handleFormSubmit = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        console.log("User signed up successfully");
-        setShowVerification(false);
-      } else {
-        console.error("Failed to sign up user");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  const hasError = (field) => !!formErrors[field];
 
   return (
     <>
@@ -258,28 +240,8 @@ function Home() {
               textAlign: "left",
             }}
           >
-            {showVerification ?
-              <Grid container spacing={2}>
-                <TextField
-                  label="Code"
-                  variant="outlined"
-                  fullWidth
-                  sx={{marginBottom: "1rem"}}
-                  name="code"
-                  value={verificationData.code}
-                  onChange={handleVerifyChange}
-                />
-              <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  onClick={handleCodeSubmit}
-              >
-                  Verify
-              </Button>
-              </Grid> :
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -367,7 +329,8 @@ function Home() {
                   }
                 />
               </Grid>
-                <Grid item xs={12} md={6}>
+
+              <Grid item xs={12} md={6}>
                 <TextField
                   label="Name"
                   variant="outlined"
@@ -376,6 +339,8 @@ function Home() {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
+                  error={hasError("name")}
+                  helperText={formErrors.name ? formErrors.name[0] : null}
                 />
                 <TextField
                   label="Email"
@@ -385,6 +350,8 @@ function Home() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  error={hasError("email")}
+                  helperText={formErrors.email ? formErrors.email[0] : null}
                 />
                 <TextField
                   label="Phone Number"
@@ -394,6 +361,12 @@ function Home() {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
+                  error={hasError("phoneNumber")}
+                  helperText={
+                    formErrors.phoneNumber
+                      ? formErrors.phoneNumber[0]
+                      : "Include country code (e.g., +1)"
+                  }
                 />
                 <TextField
                   label="Zip Code"
@@ -403,6 +376,8 @@ function Home() {
                   name="zipCode"
                   value={formData.zipCode}
                   onChange={handleInputChange}
+                  error={hasError("zipCode")}
+                  helperText={formErrors.zipCode ? formErrors.zipCode[0] : null}
                 />
                 <TextField
                   label="Balancing Authority"
@@ -429,13 +404,12 @@ function Home() {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  onClick={handleStartVerify}
+                  onClick={handleSubmit}
                 >
                   Sign Up
                 </Button>
               </Grid>
-              </Grid>
-            }
+            </Grid>
           </Box>
         </Container>
       </Box>
