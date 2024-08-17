@@ -67,3 +67,7 @@ class UserDAO:
     def truncate(self):
         self.__collection_access().drop()
 
+    def update(self, user):
+        user_dict = user.__dict__
+        collection = self.__collection_access()
+        collection.update_one({"_id": user.get_id()}, {'$set': user_dict})

@@ -1,8 +1,13 @@
 import unittest
+import pandas as pd
 from src.backend.ProcessingPipeline import ProcessingPipeline
+from src.backend.SinchTrigger import SinchTrigger
+from src.backend.ArimaProcessor import ArimaProcessor
+from src.backend.ArimaResult import ArimaResult
 from src.database.UserDAO import UserDAO
 from src.backend.User import User
 from datetime import datetime, timedelta
+from unittest.mock import patch, PropertyMock
 
 
 # A full test for the entire passive data processing pipeline.
@@ -18,10 +23,22 @@ class ProcessingPipelineIT(unittest.TestCase):
     def __populate_mongo(self, user):
         self.dao.create(user)
 
-    def test_full_pipeline(self):
-        self.__populate_mongo(User("bob@test.com", "bob", "12033824115", "ISNE", 12345))
+    @patch.object(SinchTrigger, '_SinchTrigger__send_text', new_callable=PropertyMock)
+    @patch.object(ArimaProcessor, '_ArimaProcessor__build_result', new_callable=PropertyMock)
+    def test_full_pipeline(self, mock__send_text, mock__build_result):
+        mock__send_text.send.return_value = "test"
+        conf_int = pd.DataFrame([[-0.341145, 1.960193]], columns=["lower y", "upper y"])
+        mock__build_result.send.return_value = ArimaResult(True, 2, conf_int)
+
+        user_id = "bob@test.com"
+        self.__populate_mongo(User(user_id, "bob", "12033824115", "ISNE", 12345))
+
         pipeline = ProcessingPipeline(self.dao)
         pipeline.process()
+
+        user_from_db = self.dao.find_by_id(user_id)
+        assert user_from_db is not None
+        assert user_from_db.last_alert is not None
 
     def test_bogus_user(self):
         self.__populate_mongo(User("bad@test.com", "bad", "15555555555", "BOGUS", 12345))

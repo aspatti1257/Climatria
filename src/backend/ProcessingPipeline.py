@@ -10,14 +10,14 @@ class ProcessingPipeline:
     __log = LoggerFactory.create_log(__name__)
 
     def __init__(self, dao):
-        self.dao = dao
+        self.__dao = dao
+        self.__trigger = SinchTrigger()
 
     def process(self):
-        users = self.dao.find_all()
+        users = self.__dao.find_all()
         self.__fetch_climate_data(users)
 
     def __fetch_climate_data(self, users):
-        trigger = SinchTrigger()
         for user in users:  # TODO: Multi-threading
             if self.__user_is_eligible(user):
                 grid_data_caller = GridDataCaller(user.ba)
@@ -27,12 +27,12 @@ class ProcessingPipeline:
                     arima_result = processor.analyze()
                     if arima_result.should_alert:
                         msg = grid_data_caller.generate_prompt(arima_result)
-                        result = trigger.maybe_send_text(msg, user.phone_number)
+                        result = self.__trigger.maybe_send_text(msg, user.phone_number)
                         if result is not None:
-                            user.last_alert = datetime.now()
-                            self.dao.save(user)
+                            user.last_alert = datetime.now().isoformat(timespec='milliseconds')
+                            self.__dao.update(user)
 
-        self.__log.info("Parsed %s total users and sent %s total triggers.", len(users), trigger.send_count)
+        self.__log.info("Parsed %s total users and sent %s total triggers.", len(users), self.__trigger.send_count)
 
     # TODO: Can work this directly into the Mongo query
     @staticmethod

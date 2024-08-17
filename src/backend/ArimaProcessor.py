@@ -13,21 +13,20 @@ class ArimaProcessor:
         self.inputs = inputs
         self.holdout_val = holdout_val
 
-    def analyze(self) -> ArimaResult:  # TODO: Don't return a simple bool but forecast, confidence intervals.
-        adf_inputs = self._adf_test()
+    def analyze(self) -> ArimaResult:
+        adf_inputs = self.__adf_test()
 
-        top_model = self._iterate_hyperparams(adf_inputs)
+        top_model = self.__iterate_hyperparams(adf_inputs)
         forecast = top_model.fit().get_forecast(steps=1)
         conf_int = forecast.conf_int(alpha=0.05)
         yhat = forecast.predicted_mean
         self.__log.info("Predicted mean from top model: %s", yhat)  # Forecasted values
         self.__log.info("Confidence intervals from top model prediction %s", conf_int)  # Confidence intervals
 
-        result = ArimaResult(bool(conf_int.iloc[0]["upper y"] < self.holdout_val), yhat, conf_int)
-        return result
+        return self.__build_result(conf_int, yhat)
 
     # Perform an augmented Dickey Fuller Test
-    def _adf_test(self):
+    def __adf_test(self):
         adf_test = adfuller(self.inputs)
         self.__log.info("ADF Stat determined to be: %s", str(adf_test[0]))
         self.__log.info("p-value: %s", str(adf_test[1]))
@@ -36,7 +35,7 @@ class ArimaProcessor:
         else:
             return self.inputs
 
-    def _iterate_hyperparams(self, adf_inputs):
+    def __iterate_hyperparams(self, adf_inputs):
         # Heavily adapted from https://medium.com/pythons-gurus/arima-model-selection-and-hyperparameter-tuning-7e53f687596a
         p = d = q = range(0, 4)
         pdq = list(itertools.product(p, d, q))
@@ -56,4 +55,8 @@ class ArimaProcessor:
                 continue
         self.__log.info("Best hyperparams (p, d, q) for ARIMA model chosen to be %s.", best_pdq)
         return top_model
+
+    def __build_result(self, conf_int, yhat) -> ArimaResult:
+        return ArimaResult(bool(conf_int.iloc[0]["upper y"] < self.holdout_val), yhat, conf_int)
+
 
