@@ -18,6 +18,5 @@ def main():
         time.sleep(600)  # ten minute wait between processing
 
 
-
 if __name__ == "__main__":
     main()

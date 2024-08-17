@@ -82,6 +82,9 @@ class GridDataCaller(AbstractExternalCaller):
         return pd.Series(list(training_data["value"])), holdout_data
 
     def generate_prompt(self, arima_result: ArimaResult) -> str:
-        return ("It looks like there was an Electric Grid alert in your area. {Alert}. When the grid gets dirty one"
+        # TODO: Check units here to make sure this even makes sense.
+        max_val = arima_result.conf_int.iloc[0]["upper y"]
+        problem = f"Grid usage is above the expected upper confidence level of {max_val} kWh."
+        return (f"It looks like there was an Electric Grid alert in your area. {problem}. When the grid gets dirty one"
                 " easy thing you can do is buy Renewable Energy Credits to show your support for clean energy, which"
                 " you can do here: https://terrapass.com/product/productres-recs/")

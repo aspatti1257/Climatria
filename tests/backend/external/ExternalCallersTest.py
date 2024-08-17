@@ -33,4 +33,5 @@ class ExternalCallersTest(unittest.TestCase):
         arima_result = ArimaResult(True, yhat, conf_int)
         msg = caller.generate_prompt(arima_result)
         assert msg is not None
+        assert str(conf_int.iloc[0]["upper y"]) in msg
 
