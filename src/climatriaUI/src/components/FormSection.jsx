@@ -39,6 +39,7 @@ const FormSection = ({
   });
 
   const [formErrors, setFormErrors] = useState({});
+  const [message, setMessage] = useState("");
 
   const schema = useMemo(
     () => ({
@@ -114,13 +115,16 @@ const FormSection = ({
         });
 
         if (response.ok) {
-          console.log("User signed up successfully");
+          setMessage("User signed up successfully");
           onSignupSuccess();
+        } else if (response.status === 409) {
+          setMessage("Email already exists. Please use a different email.");
         } else {
-          console.error("Failed to sign up user");
+          setMessage("Failed to sign up user. Please try again.");
         }
       } catch (error) {
         console.error("Error:", error);
+        setMessage("An error occurred. Please try again later.");
       }
     }
   };
@@ -319,6 +323,19 @@ const FormSection = ({
           </Button>
         </Grid>
       </Grid>
+      {message && (
+        <Typography
+          variant="body2"
+          sx={{
+            marginTop: "1rem",
+            color: message.includes("successfully") ? "#4CAF50" : "#FF0000",
+            textAlign: "center",
+            fontFamily: "'Poppins', sans-serif",
+          }}
+        >
+          {message}
+        </Typography>
+      )}
     </Box>
   );
 };

@@ -54,6 +54,12 @@ def signup():
         log.warning("No data provided in the signup request.")
         return jsonify({"error": "No data provided."}), 400
     
+    # Check if the email already exists
+    email = data.get("email")
+    existing_user = user_dao.find_by_id(email)
+    if existing_user:
+        return jsonify({"error": "Email already exists"}), 409
+    
     try:
         # Create a User object from the received data
         user = User(
