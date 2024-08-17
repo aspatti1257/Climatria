@@ -48,6 +48,10 @@ class UserDAO:
             return None
 
         return self.__transform_to_user(user_dict)
+    
+    def find_by_email(self, email) -> User | None:
+        # Since email is used as _id, we can reuse the find_by_id method
+        return self.find_by_id(email)
 
     def find_all(self) -> list[User]:
         collection = self.__collection_access()

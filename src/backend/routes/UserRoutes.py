@@ -73,3 +73,28 @@ def signup():
     except Exception as e:
         log.error(f"Error during signup: {str(e)}")
         return jsonify({"error": "An error occurred during signup"}), 500
+    
+@user_blueprint.route('/api/unsubscribe', methods=['POST'])
+def unsubscribe():
+    data = request.json
+    if not data:
+        log.warning("No data provided in the unsubscribe request.")
+        return jsonify({"error": "No data provided."}), 400
+    
+    try:
+        email = data.get('email')
+        user = user_dao.find_by_email(email)
+        
+        if not user:
+            log.warning(f"No user found with email: {email}")
+            return jsonify({"error": "User not found"}), 404
+
+        # Assuming you want to delete the user from the database
+        user_dao.delete(user.get_id())
+        log.info(f"User {user.get_id()} unsubscribed successfully")
+
+        return jsonify({"message": "You have successfully unsubscribed."}), 200
+    
+    except Exception as e:
+        log.error(f"Error during unsubscribe: {str(e)}")
+        return jsonify({"error": "An error occurred during unsubscribe"}), 500
