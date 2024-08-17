@@ -6,6 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from flask import Flask
 from src.backend.routes.UserRoutes import user_blueprint
+from src.backend.routes.BalancingAuthoritiesRoutes import balancing_authorities_blueprint
 from src.LoggerFactory import LoggerFactory
 
 # Set up the logger
@@ -13,8 +14,9 @@ log = LoggerFactory.create_log(__name__)
 
 app = Flask(__name__)
 
-# Register the blueprint
+# Register the blueprints
 app.register_blueprint(user_blueprint)
+app.register_blueprint(balancing_authorities_blueprint)
 
 
 def setup_flask():
