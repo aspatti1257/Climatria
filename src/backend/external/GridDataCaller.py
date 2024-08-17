@@ -1,6 +1,7 @@
 from src.backend.external.AbstractExternalCaller import AbstractExternalCaller
 from src.backend.ArimaResult import ArimaResult
 import json
+import os
 import requests
 import datetime
 import pandas as pd
@@ -8,7 +9,7 @@ import pandas as pd
 
 class GridDataCaller(AbstractExternalCaller):
 
-    EIA_API_KEY = "cM7T2ReCxwh8eHSZpGJEceRyPlJl0RmGwRvYDrQP"
+    EIA_API_KEY = os.getenv('EIA_API_KEY')
     API_URL = f"https://api.eia.gov/v2/electricity/rto/daily-region-data/data/?api_key={EIA_API_KEY}"
     MAX_ROW_COUNT = 5000
 

@@ -2,7 +2,6 @@ import re
 
 import sinch.domains.sms.exceptions
 from sinch import SinchClient
-from sinch.domains.sms import SendSMSBatchResponse
 from sinch.domains.verification import StartVerificationResponse
 from sinch.domains.verification import ReportVerificationByIdResponse
 
@@ -25,20 +24,23 @@ class SinchTrigger:
         )
         self.send_count = 0
 
-    def maybe_send_text(self, msg, phone_number) -> SendSMSBatchResponse | None:
+    def attempt_send_text(self, msg, phone_number) -> bool:
         if phone_number is None:
             self.__log.info("Unable to send. No phone number provided.")
-            return None
+            return False
 
         formatted_phone = self.__format_number(phone_number)
 
         if not re.search(re.compile("^\\+\\d{11}$"), formatted_phone):
             self.__log.info("Improperly formatted phone number: %s", formatted_phone)
-            return None
+            return False
 
-        return self.__send_text(msg, formatted_phone)
+        successful = self.__send_text(msg, formatted_phone)
+        if successful:
+            self.send_count += 1
+        return successful
 
-    def __send_text(self, msg, formatted_phone) -> SendSMSBatchResponse | None:
+    def __send_text(self, msg, formatted_phone) -> bool:
         try:
             send_batch_response = self.__sinch_client.sms.batches.send(
                 body=msg,
@@ -47,12 +49,11 @@ class SinchTrigger:
                 delivery_report="none",
                 feedback_enabled=True
             )
+            self.__log.debug("Successfully sent text message: %s", send_batch_response)
+            return True
         except sinch.domains.sms.exceptions.SMSException as exception:
             self.__log.error("Failed to send text message: %s", exception)
-            return None
-        self.__log.debug("Successfully sent text message: %s", send_batch_response)
-        self.send_count += 1
-        return send_batch_response
+            return False
 
     def attempt_verify(self, phone_number) -> StartVerificationResponse | None:
         formatted_phone = self.__format_number(phone_number)
@@ -88,7 +89,8 @@ class SinchTrigger:
         )
         return response
 
-    def __format_number(self, phone_number):
+    @staticmethod
+    def __format_number(phone_number):
         formatted_number = phone_number.strip().replace("-", "")
         if formatted_number.startswith("+"):
             return formatted_number

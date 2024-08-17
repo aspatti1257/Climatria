@@ -13,7 +13,7 @@ class SinchTriggerTest(unittest.TestCase):
 
     @patch.object(SinchTrigger, '_SinchTrigger__send_text', new_callable=PropertyMock)
     def test_valid_phone_send(self, mock__send_text):
-        mock__send_text.send.return_value = "test"
+        mock__send_text.send.return_value = True
 
         valid_nums = [
             "15555555555",
@@ -23,8 +23,9 @@ class SinchTriggerTest(unittest.TestCase):
         ]
 
         for num in valid_nums:
-            result = self.trigger.maybe_send_text("foo", num)
-            assert result is not None
+            result = self.trigger.attempt_send_text("foo", num)
+            assert result
+        assert self.trigger.send_count == len(valid_nums)
 
     def test_invalid_phone_number(self):
         invalid_nums = [
@@ -34,8 +35,9 @@ class SinchTriggerTest(unittest.TestCase):
         ]
 
         for num in invalid_nums:
-            response = self.trigger.maybe_send_text("foo", num)
-            assert response is None
+            response = self.trigger.attempt_send_text("foo", num)
+            assert not response
+        assert self.trigger.send_count == 0
 
     @patch.object(SinchTrigger, '_SinchTrigger__start_verify', new_callable=PropertyMock)
     def test_verify_valid(self, mock_verify):

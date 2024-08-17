@@ -25,7 +25,7 @@ class ProcessingPipelineIT(unittest.TestCase):
 
     @patch.object(SinchTrigger, '_SinchTrigger__send_text', new_callable=PropertyMock)
     @patch.object(ArimaProcessor, '_ArimaProcessor__build_result', new_callable=PropertyMock)
-    def test_full_pipeline(self, mock__send_text, mock__build_result):
+    def test_full_pipeline_text(self, mock__send_text, mock__build_result):
         mock__send_text.send.return_value = "test"
         conf_int = pd.DataFrame([[-0.341145, 1.960193]], columns=["lower y", "upper y"])
         mock__build_result.send.return_value = ArimaResult(True, 2, conf_int)
