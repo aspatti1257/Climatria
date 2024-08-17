@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import validate from "validate.js";
 import {
   Box,
@@ -13,6 +13,7 @@ import {
   Select,
   MenuItem,
   FormControlLabel,
+  Autocomplete,
 } from "@mui/material";
 import ElectricalServicesOutlinedIcon from "@mui/icons-material/ElectricalServicesOutlined";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -39,8 +40,30 @@ function Home() {
   });
 
   const [formErrors, setFormErrors] = useState({});
+  const [balancingAuthorities, setBalancingAuthorities] = useState([]);
 
-  const API_BASE_URL = "http://3.145.3.230:8080";
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
+
+  useEffect(() => {
+    // Fetch balancing authorities on component load
+    const fetchBalancingAuthorities = async () => {
+      try {
+        const response = await fetch(
+          `${VITE_BASE_URL}/api/balancing_authorities`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setBalancingAuthorities(data);
+        } else {
+          console.error("Failed to fetch balancing authorities");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchBalancingAuthorities();
+  }, []);
 
   const schema = useMemo(
     () => ({
@@ -68,6 +91,9 @@ function Home() {
           message: "must be a valid zip code",
         },
       },
+      balancingAuthority: {
+        presence: { allowEmpty: false, message: "is required" }, // Add validation rule
+      },
     }),
     []
   );
@@ -77,6 +103,13 @@ function Home() {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+  };
+
+  const handleAutocompleteChange = (event, newValue) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      balancingAuthority: newValue || "",
     }));
   };
 
@@ -98,7 +131,7 @@ function Home() {
 
     if (!errors) {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/signup`, {
+        const response = await fetch(`${VITE_BASE_URL}/api/signup`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -379,14 +412,30 @@ function Home() {
                   error={hasError("zipCode")}
                   helperText={formErrors.zipCode ? formErrors.zipCode[0] : null}
                 />
-                <TextField
-                  label="Balancing Authority"
-                  variant="outlined"
+                <Autocomplete
+                  options={balancingAuthorities}
+                  getOptionLabel={(option) => option}
                   fullWidth
                   sx={{ marginBottom: "1rem" }}
-                  name="balancingAuthority"
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Balancing Authority"
+                      variant="outlined"
+                      name="balancingAuthority"
+                      error={hasError("balancingAuthority")}
+                      helperText={
+                        formErrors.balancingAuthority
+                          ? formErrors.balancingAuthority[0]
+                          : null
+                      }
+                    />
+                  )}
+                  onChange={handleAutocompleteChange}
                   value={formData.balancingAuthority}
-                  onChange={handleInputChange}
+                  isOptionEqualToValue={(option, value) =>
+                    option === value || value === ""
+                  }
                 />
                 <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
                   <InputLabel>Frequency</InputLabel>
