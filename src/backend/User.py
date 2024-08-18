@@ -6,7 +6,7 @@ class User:
         self.name = name
         self.phone_number = phone_number
         self.ba = ba
-        self.zip_code = zip_code 
+        self.zip_code = zip_code
         self.last_alert = last_alert
 
     def __eq__(self, other):

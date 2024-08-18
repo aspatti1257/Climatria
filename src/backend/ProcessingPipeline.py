@@ -1,4 +1,5 @@
 from src.backend.external.GridDataCaller import GridDataCaller
+from src.backend.external.UltraVioletCaller import UltraVioletCaller
 from src.backend.ArimaProcessor import ArimaProcessor
 from src.backend.SinchTrigger import SinchTrigger
 from src.backend.SMTPTrigger import SMTPTrigger
@@ -25,20 +26,22 @@ class ProcessingPipeline:
     def __fetch_climate_data(self, users):
         for user in users:  # TODO: Multi-threading
             if self.__user_is_eligible(user):
-                grid_data_caller = GridDataCaller(user.ba)
-                grid_data, holdout = grid_data_caller.fetch_timeseries_data()
-                if len(grid_data) > 0:
-                    processor = ArimaProcessor(grid_data, holdout)
-                    arima_result = processor.analyze()
-                    if arima_result.should_alert:
-                        self.__process_alert(arima_result, grid_data_caller, user)
+                alerts = []
+                for caller in [UltraVioletCaller(user.zip_code), GridDataCaller(user.ba)]:
+                    historical_data, holdout = caller.fetch_timeseries_data()
+                    if len(historical_data) > 0 and historical_data.nunique() > 1:
+                        processor = ArimaProcessor(historical_data, holdout)
+                        arima_result = processor.analyze()
+                        if arima_result.should_alert:
+                            alerts.append(caller.generate_prompt(arima_result))
+                if len(alerts) > 0:
+                    self.__process_alert("\n\n".join(alerts), user)
 
         total_sends = self.__phone_trigger.send_count + self.__email_trigger.send_count
         self.__log.info("Parsed %s total users and sent %s total triggers.", len(users), total_sends)
         self.__cleanup()
 
-    def __process_alert(self, arima_result, grid_data_caller, user):
-        msg = grid_data_caller.generate_prompt(arima_result)
+    def __process_alert(self, msg, user):
         successful_send = self.__attempt_send(msg, user)
         if successful_send:
             user.last_alert = datetime.now().isoformat(timespec='milliseconds')

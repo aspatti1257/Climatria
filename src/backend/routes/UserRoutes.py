@@ -79,7 +79,8 @@ def signup():
     except Exception as e:
         log.error(f"Error during signup: {str(e)}")
         return jsonify({"error": "An error occurred during signup"}), 500
-    
+
+
 @user_blueprint.route('/api/unsubscribe', methods=['POST'])
 def unsubscribe():
     data = request.json
