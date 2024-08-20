@@ -195,10 +195,8 @@ const FormSection = ({
                   variant="body2"
                   sx={{ fontSize: "14px", color: "#555555" }}
                 >
-                  With the ozone layer in recovery, UV levels may still
-                  fluctuate depending on the season and your location.
-                  Monitoring UV exposure remains important, particularly during
-                  high-intensity sunlight.
+                  Ozone recovery continues, but UV levels can still vary by
+                  season and location. Monitor exposure during intense sunlight.
                 </Typography>
               </Box>
             }
