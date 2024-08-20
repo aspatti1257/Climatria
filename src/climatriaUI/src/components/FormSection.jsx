@@ -195,8 +195,10 @@ const FormSection = ({
                   variant="body2"
                   sx={{ fontSize: "14px", color: "#555555" }}
                 >
-                  While you wouldn’t think UV levels have to do with climate
-                  change, with a weakening ozone, UV irradiance has increased.
+                  With the ozone layer in recovery, UV levels may still
+                  fluctuate depending on the season and your location.
+                  Monitoring UV exposure remains important, particularly during
+                  high-intensity sunlight.
                 </Typography>
               </Box>
             }
