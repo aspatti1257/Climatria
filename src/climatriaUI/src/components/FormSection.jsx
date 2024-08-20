@@ -15,6 +15,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
+import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
 import ForestOutlinedIcon from "@mui/icons-material/ForestOutlined";
 import ElectricalServicesOutlinedIcon from "@mui/icons-material/ElectricalServicesOutlined";
@@ -35,6 +36,7 @@ const FormSection = ({
       energy: false,
       water: false,
       airQuality: false,
+      uvLevels: false,
     },
   });
 
@@ -168,6 +170,33 @@ const FormSection = ({
                 >
                   During high usage periods the electric grid uses peaker plants
                   (typically coal) to support the electricity demand.
+                </Typography>
+              </Box>
+            }
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.notifications.uvLevels}
+                onChange={handleCheckboxChange}
+                name="uvLevels"
+              />
+            }
+            label={
+              <Box
+                sx={{
+                  fontSize: "16px",
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                <strong>UV Levels</strong>
+                <WbSunnyOutlinedIcon sx={{ marginRight: "0.5rem" }} />{" "}
+                <Typography
+                  variant="body2"
+                  sx={{ fontSize: "14px", color: "#555555" }}
+                >
+                  While you wouldn’t think UV levels have to do with climate
+                  change, with a weakening ozone, UV irradiance has increased.
                 </Typography>
               </Box>
             }
