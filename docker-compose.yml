@@ -7,8 +7,6 @@ services:
     volumes:
       - ./src/climatriaUI:/app
       - node_modules:/app/node_modules
-    env_file:
-      - src/climatriaUI/src/sample.env
     depends_on:
       - api
 
@@ -23,8 +21,6 @@ services:
     environment:
       - FLASK_ENV=development
       - MONGO_URI=mongodb://mongo-db:27017/climatria
-    env_file:
-      - sample.env
     depends_on:
       - db
 
@@ -47,8 +43,6 @@ services:
 #      - .:/main
 #    environment:
 #      - MONGO_URI=mongodb://mongo-db:27017/climatria
-#    env_file:
-#      - sample.env
 #    depends_on:
 #      - db
 

@@ -29,7 +29,7 @@ Realtime Climate (US only) is a full-stack web application that provides free, t
 - **AWS EC2**: Application is deployed on an EC2 instance running Docker containers.
 
 The application is deployed on an AWS EC2 instance.
-To access the live version of the application, visit http://3.145.3.230:5173/
+To access the live version of the application, visit http://3.143.253.57:5173/
 
 ## Data Sources
 
